@@ -11,30 +11,31 @@ class RingBuffer:
 
     # This method will enqueue the new item into the list
     def append(self, item):
-        if self.capacity > self.storage.length:
+        if self.capacity > len(self.storage):
             self.storage.add_to_tail(item)
+            current = self.storage.head
             self.size += 1  # after an item is added to the list, it will increase by 1
         else:
-            current_node = None
-            node = self.storage.head
-        while current_node is None and node is not None:
-            if node.value == self.current:
-                current_node = node
-            node = node.next
-        # It is also possible that the node is at the tail
-            if current_node is self.storage.tail:
-                self.storage.delete(self.storage.head)
-                self.storage.add_to_head(item)
-            else:
-                current_node.insert_after(item)
-                self.storage.delete(current_node)
-        self.current = item
+            removed_node = self.storage.head
+            self.storage.remove_from_head()
+            self.storage.add_to_tail(item)
+            if removed_node == self.current:
+                self.current = self.storage.tail
 
     def get(self):
+        # Note:  This is the only [] allowed
         list_buffer_contents = []
-        node = self.storage.head
-        while node is not None:
+
+        # TODO: Your code here
+        list_buffer_contents.append(self.current.value)
+
+        if self.current == self.storage.tail:
+            node = self.storage.head
+        else:
+            node = self.current.next
+
+        while node is not self.current:
             list_buffer_contents.append(node.value)
-            node = node.next
+            node = node.next if node.next else self.storage.head
 
         return list_buffer_contents
