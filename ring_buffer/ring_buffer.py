@@ -13,12 +13,13 @@ class RingBuffer:
     def append(self, item):
         if self.capacity > len(self.storage):
             self.storage.add_to_tail(item)
-            current = self.storage.head
+            self.current = self.storage.head
             self.size += 1  # after an item is added to the list, it will increase by 1
         else:
             removed_node = self.storage.head
+            self.size -=1
             self.storage.remove_from_head()
-            self.storage.add_to_tail(item)
+            self.storage.add_to_head(item)
             if removed_node == self.current:
                 self.current = self.storage.tail
 
